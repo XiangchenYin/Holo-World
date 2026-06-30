@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Holo-World: Unified Camera, Object and Weather Control for Video World Model</title>
+
+    <link rel="icon" type="image/png" href="assets/logos/logo.png">
+    <meta name="title" content="Holo-World: Unified Camera, Object and Weather Control for Video World Model">
+    <meta name="description" content="A unified framework for controlling camera, object, and weather states in video world model.">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Holo-World: Unified Camera, Object and Weather Control for Video World Model">
+    <meta property="og:description" content="A unified framework for controlling camera, object, and weather states in video world models.">
+    <meta property="og:image" content="assets/logos/logo.png">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Holo-World: Unified Camera, Object and Weather Control for Video World Model">
+    <meta name="twitter:description" content="A unified framework for controlling camera, object, and weather states in video world models.">
+    <meta name="twitter:image" content="assets/logos/logo.png">
+
+    <link rel="stylesheet" href="css/font-awesome/all.min.css">
+    <link href="css/google-fonts.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="nav-bar" id="navBar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">
+                <img src="assets/logos/logo.png" alt="Logo">
+                <span>Holo-World</span>
+            </a>
+            <div class="nav-links">
+                <a href="#tldr" class="nav-link">Abstract</a>
+                <a href="#method" class="nav-link">Method</a>
+                <a href="#weather" class="nav-link">Weather Transfer</a>
+                <a href="#world" class="nav-link">World Preservation</a>
+
+                <a href="#comparison-real" class="nav-link">Camera & Object Comparison</a>
+                <a href="#comparison-weather" class="nav-link">Weather Comparison</a>
+                <a href="#citation" class="nav-link">Citation</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <div class="container">
+        <!-- Header - Centered Layout -->
+        <header>
+            <h1 class="hero-title">Holo-World</h1>
+            <div class="hero-subtitle">
+                Unified Camera, Object and Weather Control for Video World Model
+            </div>
+            <div class="hero-divider"></div>
+            <div class="author-info">
+                <div class="authors">
+                    <a href="https://xiangchenyin.github.io/" class="author-link" target="_blank" rel="noopener">Xiangchen Yin<sup>1,3</sup></a>
+                    <a href="https://sunwenzhang1996.github.io/" class="author-link" target="_blank" rel="noopener">Wenzhang Sun<sup>2</sup></a>
+                    <a href="#" class="author-link" target="_blank" rel="noopener">Jiahui Yuan<sup>1</sup></a>
+                    <a href="#" class="author-link" target="_blank" rel="noopener">Zijie Liu<sup>1</sup></a> <br>
+                    <a href="https://ydchen0806.github.io/" class="author-link" target="_blank" rel="noopener">Yinda Chen<sup>1</sup></a>
+                    <a href="#" class="author-link" target="_blank" rel="noopener">Wei Li<sup>1</sup></a>
+                    <a href="https://scholar.google.com/citations?hl=zh-CN&user=Wh4qVRoAAAAJ&view_op=list_works&sortby=pubdate" class="author-link" target="_blank" rel="noopener">Dachun Kai<sup>1</sup></a>
+                    <a href="#" class="author-link" target="_blank" rel="noopener">Chunfeng Wang<sup>2</sup></a>
+                    <a href="#" class="author-link" target="_blank" rel="noopener">Xiaoyan Sun<sup>1,3,&dagger;</sup></a>
+                </div>
+                <div class="affiliations">
+                    <sup>1</sup>University of Science and Technology of China
+                    <sup>2</sup>Li Auto. <br>
+                    <sup>3</sup>Institute of Artificial Intelligence, Hefei Comprehensive National Science Center
+                    <br><sup>&dagger;</sup>Corresponding authors.
+                    <br>yinxc2000@gmail.com
+
+                </div>
+            </div>
+            <div class="link-buttons">
+                <a href="https://arxiv.org/abs/2606.20083" class="link-button link-button-primary"><img src="https://upload.wikimedia.org/wikipedia/commons/b/bc/ArXiv_logo_2022.svg" alt="arXiv" style="width: 1.2rem; height: 1.2rem;"> Paper</a>
+                <a href="https://github.com/XiangchenYin/Holo-World" class="link-button" target="_blank" rel="noopener"><i class="fab fa-github"></i> Code</a>
+                <a href="https://huggingface.co/suxi123/Holo-World" class="link-button"><span class="hf-logo" aria-hidden="true">&#129303;</span> Model</a>
+                <a href="#citation" class="link-button"><i class="fas fa-quote-left"></i> Cite</a>
+            </div>
+        </header>
+
+        <!-- Section 1: ABSTRACT -->
+        <h2 class="section-title" id="tldr">📋 ABSTRACT</h2>
+        <div class="content-box">
+            <ul class="tldr-list">
+                Video world models are moving toward preserving an observed world under controllable camera and object motion while allowing its environmental state to change. Yet these controls remain isolated, and weather generation typically relies on a source video or reconstructed scene that already specifies future structure. We study a first-frame-anchored source-to-state setting, where the model starts from a single image and follows explicit camera and object controls and an optional weather instruction, then generates a video that either preserves the source world or transfers it to a target weather state. To address these challenges, we first build <span class="abstract-keyword">HoloStateData</span>, a state video dataset that turns diverse videos into unified control samples for camera, object, and weather supervision. Second, we introduce <span class="abstract-keyword">Holo-World</span>, a unified controllable video world model that jointly controls the scene from a single image. Its Unified Scene Adapter factorizes world preservation and weather transfer into distinct parameter subspaces, using rendered background, geometry buffers, and object controls to maintain controlled scene structure while modeling weather-dependent appearance and particle effects. Additionally, Scene-Weather Decomposed CFG guides scene and weather residuals separately, strengthening target weather effects without over-amplifying the full condition. Quantitative and qualitative experiments demonstrate that Holo-World maintains precise camera and object controls with consistent scene structure while transferring scenes into diverse target weather states, outperforming video-to-video weather editing baselines on weather-state generation.
+            </ul>
+        </div>
+
+        <div class="method-cards-block">
+            <div class="method-cards-row-label">Core Ideas</div>
+            <div class="method-cards-grid method-core-grid">
+                <div class="method-card method-card-core">
+                    <div class="method-card-hero">01</div>
+                    <h4 class="method-card-title">Unified World Control</h4>
+                    <p class="method-card-kicker">A unified video world model interface</p>
+                    <p class="method-card-desc">
+                        Holo-World jointly controls camera motion, object dynamics, and weather state from a single image.
+                    </p>
+                </div>
+
+                <div class="method-card method-card-core">
+                    <div class="method-card-hero">02</div>
+                    <h4 class="method-card-title">World Preservation</h4>
+                    <p class="method-card-kicker">Source-side controls define the scene scaffold to preserve</p>
+                    <p class="method-card-desc">
+                        Camera trajectory, rendered geometry buffers, and object controls anchor the background structure and dynamic entities, keeping the generated world consistent with the observed source.
+                    </p>
+                </div>
+
+                <div class="method-card method-card-core">
+                    <div class="method-card-hero">03</div>
+                    <h4 class="method-card-title">Weather-State Transfer</h4>
+                    <p class="method-card-kicker">Target weather specifies the state to render</p>
+                    <p class="method-card-desc">
+                        The target-weather prompt guides the preserved scene scaffold into a new weather state, allowing weather-dependent appearance and particle effects to emerge within the same controlled world.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Demo Video Section -->
+        <div class="demo-video-container">
+            <div class="demo-video-title">
+                <i class="fas fa-play-circle"></i>
+                Demo Video
+            </div>
+            <div class="demo-video-wrapper">
+                <video muted loop autoplay controls style="width: 80%; height: auto; margin: 0 auto;">
+                    <source src="assets/demo.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+
+
+        <!-- Section 2: Method -->
+        <h2 class="section-title" id="method">🔬 Method</h2>
+        <div class="content-box">
+            <div class="figure-container">
+                <img src="assets/fig-method.png" alt="Method Overview" class="figure-framework">
+            </div>
+
+            <p style="margin-top: 30px; font-size: 1.1rem; line-height: 1.8; color: rgba(255,255,255,0.85);">
+                Holo-World jointly controls camera motion, object dynamics, and scene weather state within the same observed world. The model must change weather from a single image while still following explicit camera and object controls, rather than relying on a complete source video as in video-to-video weather editing.
+            </p>
+        </div>
+
+        <div class="content-box data-benchmark-box">
+            <div class="method-cards-row-label">Dataset &amp; Benchmark</div>
+            <div class="method-cards-grid method-data-grid">
+                <div class="method-card method-card-data">
+                    <div class="method-card-hero">15K</div>
+                    <h4 class="method-card-title">HoloStateData</h4>
+                    <p class="method-card-desc">
+                        15000+ training samples across <span class="method-card-em">Real / Simulation / V2V</span> subsets, carrying paired controls for camera, object, and weather supervision.
+                    </p>
+                </div>
+
+                <div class="method-card method-card-data">
+                    <div class="method-card-hero">150</div>
+                    <h4 class="method-card-title">Benchmark</h4>
+                    <p class="method-card-desc">
+                        150 mutually exclusive evaluation samples for <span class="method-card-em">world preservation</span> and <span class="method-card-em">weather transfer</span> tracks.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Section: Weather-State Transfer -->
+        <h2 class="section-title" id="weather">🌦️ Weather-State Transfer</h2>
+        <div class="content-box weather-intro">
+            <p style="font-size: 1.05rem; line-height: 1.8;">
+                Given the same input: camera trajectory and rendered controls, Holo-World renders the controlled scene under different target weather states. Our learn weather-state transfer within the same scene scaffold, rather than regenerating a different world.
+            </p>
+        </div>
+        <div class="weather-showcase">
+            <div class="weather-sample">
+                <div class="weather-sample-header">Sample 1 <span class="weather-sample-tag">Simulation subset</span></div>
+                <div class="weather-inputs">
+                    <div class="weather-input-cells">
+                        <div class="weather-cell">
+                            <video class="weather-video input-video" muted loop autoplay playsinline preload="metadata"><source src="assets/weather/sample1_camera.mp4" type="video/mp4"></video>
+                            <div class="weather-caption">Camera Trajectory</div>
+                        </div>
+                        <div class="weather-cell">
+                            <video class="weather-video input-video" muted loop autoplay playsinline preload="metadata"><source src="assets/weather/sample1_rgb.mp4" type="video/mp4"></video>
+                            <div class="weather-caption">Rendered RGB</div>
+                        </div>
+                        <div class="weather-cell weather-cell-origin">
+                            <video class="weather-video input-video" muted loop autoplay playsinline preload="metadata"><source src="assets/weather/sample1_origin.mp4" type="video/mp4"></video>
+                            <div class="weather-caption"><i class="fas fa-image"></i> Origin</div>
+                        </div>
+                        <div class="weather-cell">
+                            <img src="assets/weather/sample1_origin_frame.jpg" alt="Origin Frame" class="weather-video input-video" style="object-fit: cover;">
+                            <div class="weather-caption">First Frame</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="weather-outputs">
+                    <div class="weather-cell">
+                        <video class="weather-video" muted loop autoplay playsinline preload="metadata"><source src="assets/weather/sample1_snow.mp4" type="video/mp4"></video>
+                        <div class="weather-caption"><i class="fas fa-snowflake"></i> Snow</div>
+                    </div>
+                    <div class="weather-cell">
+                        <video class="weather-video" muted loop autoplay playsinline preload="metadata"><source src="assets/weather/sample1_cloud.mp4" type="video/mp4"></video>
+                        <div class="weather-caption"><i class="fas fa-cloud"></i> Cloud</div>
+                    </div>
+                    <div class="weather-cell">
+                        <video class="weather-video" muted loop autoplay playsinline preload="metadata"><source src="assets/weather/sample1_fog.mp4" type="video/mp4"></video>
+                        <div class="weather-caption"><i class="fas fa-smog"></i> Fog</div>
+                    </div>
+                    <div class="weather-cell">
+                        <video class="weather-video" muted loop autoplay playsinline preload="metadata"><source src="assets/weather/sample1_rain.mp4" type="video/mp4"></video>
+                        <div class="weather-caption"><i class="fas fa-cloud-rain"></i> Rain</div>
+                    </div>
+                </div>
+            </div>
+            <div class="weather-sample">
+                <div class="weather-sample-header">Sample 2 <span class="weather-sample-tag">V2V subset</span></div>
+                <div class="weather-inputs">
+                    <div class="weather-input-cells">
+                        <div class="weather-cell">
+                            <video class="weather-video input-video" muted loop autoplay playsinline preload="metadata"><source src="assets/weather/sample2_camera.mp4" type="video/mp4"></video>
+                            <div class="weather-caption">Camera Trajectory</div>
+                        </div>
+                        <div class="weather-cell">
+                            <video class="weather-video input-video" muted loop autoplay playsinline preload="metadata"><source src="assets/weather/sample2_rgb.mp4" type="video/mp4"></video>
+                            <div class="weather-caption">Rendered RGB</div>
+                        </div>
+                        <div class="weather-cell weather-cell-origin">
+                            <video class="weather-video input-video" muted loop autoplay playsinline preload="metadata"><source src="assets/weather/sample2_origin.mp4" type="video/mp4"></video>
+                            <div class="weather-caption"><i class="fas fa-image"></i> Origin</div>
+                        </div>
+                        <div class="weather-cell">
+                            <img src="assets/weather/sample2_origin_frame.jpg" alt="Origin Frame" class="weather-video input-video" style="object-fit: cover;">
+                            <div class="weather-caption">First Frame</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="weather-outputs">
+                    <div class="weather-cell">
+                        <video class="weather-video" muted loop autoplay playsinline preload="metadata"><source src="assets/weather/sample2_snow.mp4" type="video/mp4"></video>
+                        <div class="weather-caption"><i class="fas fa-snowflake"></i> Snow</div>
+                    </div>
+                    <div class="weather-cell">
+                        <video class="weather-video" muted loop autoplay playsinline preload="metadata"><source src="assets/weather/sample2_cloud.mp4" type="video/mp4"></video>
+                        <div class="weather-caption"><i class="fas fa-cloud"></i> Cloud</div>
+                    </div>
+                    <div class="weather-cell">
+                        <video class="weather-video" muted loop autoplay playsinline preload="metadata"><source src="assets/weather/sample2_fog.mp4" type="video/mp4"></video>
+                        <div class="weather-caption"><i class="fas fa-smog"></i> Fog</div>
+                    </div>
+                    <div class="weather-cell">
+                        <video class="weather-video" muted loop autoplay playsinline preload="metadata"><source src="assets/weather/sample2_rain.mp4" type="video/mp4"></video>
+                        <div class="weather-caption"><i class="fas fa-cloud-rain"></i> Rain</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Section: World Preservation -->
+        <h2 class="section-title" id="world">🧭 World Preservation</h2>
+        <div class="content-box">
+            <p class="section-intro" style="font-size: 1.05rem; line-height: 1.8; margin: 0;">
+                Source-side controls define the scene scaffold Holo-World should preserve. Camera trajectory, rendered world controls, and object controls anchor background structure and dynamic entities, enabling temporally consistent video synthesis.
+            </p>
+        </div>
+
+        <div class="weather-showcase world-preservation-showcase">
+            <div class="weather-sample">
+                <div class="weather-sample-header">Sample 1</div>
+                <div class="world-preservation-inputs">
+                    <div class="world-preservation-input-cells">
+                        <div class="weather-cell">
+                            <video class="weather-video input-video" muted loop autoplay playsinline preload="metadata"><source src="assets/preservation/sample1_camera.mp4" type="video/mp4"></video>
+                            <div class="weather-caption">Camera Trajectory</div>
+                        </div>
+                        <div class="weather-cell">
+                            <img src="assets/preservation/sample1_firstframe.jpg" alt="First Frame" class="weather-video input-video" style="object-fit: cover;">
+                            <div class="weather-caption">First Frame</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="world-preservation-output-cells">
+                    <div class="weather-cell">
+                        <video class="weather-video input-video" muted loop autoplay playsinline preload="metadata"><source src="assets/preservation/sample1_rgb.mp4" type="video/mp4"></video>
+                        <div class="weather-caption">Rendered RGB</div>
+                    </div>
+                    <div class="weather-cell">
+                        <video class="weather-video input-video" muted loop autoplay playsinline preload="metadata"><source src="assets/preservation/sample1_normal.mp4" type="video/mp4"></video>
+                        <div class="weather-caption">Rendered Normal</div>
+                    </div>
+                    <div class="weather-cell">
+                        <video class="weather-video input-video" muted loop autoplay playsinline preload="metadata"><source src="assets/preservation/sample1_depth.mp4" type="video/mp4"></video>
+                        <div class="weather-caption">Rendered Depth</div>
+                    </div>
+                    <div class="weather-cell weather-cell-ours">
+                        <video class="weather-video" muted loop autoplay playsinline preload="metadata"><source src="assets/preservation/sample1_holoworld.mp4" type="video/mp4"></video>
+                        <div class="weather-caption"><strong>Holo-World Output</strong> <span class="weather-ours-badge">Ours</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="weather-sample">
+                <div class="weather-sample-header">Sample 2</div>
+                <div class="world-preservation-inputs">
+                    <div class="world-preservation-input-cells">
+                        <div class="weather-cell">
+                            <video class="weather-video input-video" muted loop autoplay playsinline preload="metadata"><source src="assets/preservation/sample2_camera.mp4" type="video/mp4"></video>
+                            <div class="weather-caption">Camera Trajectory</div>
+                        </div>
+                        <div class="weather-cell">
+                            <img src="assets/preservation/sample2_firstframe.jpg" alt="First Frame" class="weather-video input-video" style="object-fit: cover;">
+                            <div class="weather-caption">First Frame</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="world-preservation-output-cells">
+                    <div class="weather-cell">
+                        <video class="weather-video input-video" muted loop autoplay playsinline preload="metadata"><source src="assets/preservation/sample2_rgb.mp4" type="video/mp4"></video>
+                        <div class="weather-caption">Rendered RGB</div>
+                    </div>
+                    <div class="weather-cell">
+                        <video class="weather-video input-video" muted loop autoplay playsinline preload="metadata"><source src="assets/preservation/sample2_normal.mp4" type="video/mp4"></video>
+                        <div class="weather-caption">Rendered Normal</div>
+                    </div>
+                    <div class="weather-cell">
+                        <video class="weather-video input-video" muted loop autoplay playsinline preload="metadata"><source src="assets/preservation/sample2_depth.mp4" type="video/mp4"></video>
+                        <div class="weather-caption">Rendered Depth</div>
+                    </div>
+                    <div class="weather-cell weather-cell-ours">
+                        <video class="weather-video" muted loop autoplay playsinline preload="metadata"><source src="assets/preservation/sample2_holoworld.mp4" type="video/mp4"></video>
+                        <div class="weather-caption"><strong>Holo-World Output</strong> <span class="weather-ours-badge">Ours</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title" id="comparison-real">🎯 Camera & Object Control Comparison</h2>
+        <div class="content-box">
+            <p class="section-intro" style="font-size: 1.05rem; line-height: 1.8; margin: 0;">
+                Controllable video generation under camera trajectory and object manipulation. We compare Holo-World with VerseCrafter, Gen3C, and Uni3C. The top rows show the camera trajectory, Ground Truth, each method's rendered RGB control, and the bottom row shows the corresponding generated results.
+        </p>
+    </div>
+
+<div class="weather-showcase comparison-real-showcase">
+    <div class="weather-sample">
+        <div class="weather-sample-header">Sample 1</div>
+        <div class="weather-inputs">
+            <div class="comparison-real-gt-row">
+                    <div class="weather-cell weather-cell-origin">
+                    <video class="weather-video input-video" muted loop autoplay playsinline preload="metadata"><source src="assets/comparison-real/sample1_camera.mp4" type="video/mp4"></video>
+                    <div class="weather-caption">Camera Trajectory</div>
+                </div>
+                    <div class="weather-cell weather-cell-origin">
+                    <video class="weather-video input-video" muted loop autoplay playsinline preload="metadata"><source src="assets/comparison-real/sample1_gt.mp4" type="video/mp4"></video>
+                    <div class="weather-caption"><i class="fas fa-video"></i> Ground Truth</div>
+                </div>
+                </div>
+                <div class="weather-input-cells">
+                    <div class="weather-cell">
+                    <video class="weather-video input-video" muted loop autoplay playsinline preload="metadata"><source src="assets/comparison-real/sample1_holoworld_rendered.mp4" type="video/mp4"></video>
+                    <div class="weather-caption">Holo-World Rendered RGB</div>
+                </div>
+                    <div class="weather-cell">
+                    <video class="weather-video input-video" muted loop autoplay playsinline preload="metadata"><source src="assets/comparison-real/sample1_versecrafter_rendered.mp4" type="video/mp4"></video>
+                    <div class="weather-caption">VerseCrafter Rendered RGB</div>
+                </div>
+                    <div class="weather-cell">
+                    <video class="weather-video input-video" muted loop autoplay playsinline preload="metadata"><source src="assets/comparison-real/sample1_gen3c_rendered.mp4" type="video/mp4"></video>
+                    <div class="weather-caption">Gen3C Rendered RGB</div>
+                </div>
+                    <div class="weather-cell">
+                    <video class="weather-video input-video" muted loop autoplay playsinline preload="metadata"><source src="assets/comparison-real/sample1_uni3c_rendered.mp4" type="video/mp4"></video>
+                    <div class="weather-caption">Uni3C Rendered RGB</div>
+                </div>
+            </div>
+        </div>
+        <div class="weather-outputs">
+            <div class="weather-cell weather-cell-ours">
+                <video class="weather-video" muted loop autoplay playsinline preload="metadata"><source src="assets/comparison-real/sample1_holoworld.mp4" type="video/mp4"></video>
+                <div class="weather-caption"><strong>Holo-World</strong> <span class="weather-ours-badge">Ours</span></div>
+            </div>
+            <div class="weather-cell">
+                <video class="weather-video" muted loop autoplay playsinline preload="metadata"><source src="assets/comparison-real/sample1_versecrafter.mp4" type="video/mp4"></video>
+                <div class="weather-caption">VerseCrafter</div>
+            </div>
+            <div class="weather-cell">
+                <video class="weather-video" muted loop autoplay playsinline preload="metadata"><source src="assets/comparison-real/sample1_gen3c.mp4" type="video/mp4"></video>
+                <div class="weather-caption">Gen3C</div>
+            </div>
+            <div class="weather-cell">
+                <video class="weather-video" muted loop autoplay playsinline preload="metadata"><source src="assets/comparison-real/sample1_uni3c.mp4" type="video/mp4"></video>
+                <div class="weather-caption">Uni3C</div>
+            </div>
+        </div>
+    </div>
+    <div class="weather-sample">
+        <div class="weather-sample-header">Sample 2</div>
+        <div class="weather-inputs">
+            <div class="comparison-real-gt-row">
+                    <div class="weather-cell weather-cell-origin">
+                    <video class="weather-video input-video" muted loop autoplay playsinline preload="metadata"><source src="assets/comparison-real/sample2_camera.mp4" type="video/mp4"></video>
+                    <div class="weather-caption">Camera Trajectory</div>
+                </div>
+                    <div class="weather-cell weather-cell-origin">
+                    <video class="weather-video input-video" muted loop autoplay playsinline preload="metadata"><source src="assets/comparison-real/sample2_gt.mp4" type="video/mp4"></video>
+                    <div class="weather-caption"><i class="fas fa-video"></i> Ground Truth</div>
+                </div>
+                </div>
+                <div class="weather-input-cells">
+                    <div class="weather-cell">
+                    <video class="weather-video input-video" muted loop autoplay playsinline preload="metadata"><source src="assets/comparison-real/sample2_holoworld_rendered.mp4" type="video/mp4"></video>
+                    <div class="weather-caption">Holo-World Rendered RGB</div>
+                </div>
+                    <div class="weather-cell">
+                    <video class="weather-video input-video" muted loop autoplay playsinline preload="metadata"><source src="assets/comparison-real/sample2_versecrafter_rendered.mp4" type="video/mp4"></video>
+                    <div class="weather-caption">VerseCrafter Rendered RGB</div>
+                </div>
+                    <div class="weather-cell">
+                    <video class="weather-video input-video" muted loop autoplay playsinline preload="metadata"><source src="assets/comparison-real/sample2_gen3c_rendered.mp4" type="video/mp4"></video>
+                    <div class="weather-caption">Gen3C Rendered RGB</div>
+                </div>
+                    <div class="weather-cell">
+                    <video class="weather-video input-video" muted loop autoplay playsinline preload="metadata"><source src="assets/comparison-real/sample2_uni3c_rendered.mp4" type="video/mp4"></video>
+                    <div class="weather-caption">Uni3C Rendered RGB</div>
+                </div>
+            </div>
+        </div>
+        <div class="weather-outputs">
+            <div class="weather-cell weather-cell-ours">
+                <video class="weather-video" muted loop autoplay playsinline preload="metadata"><source src="assets/comparison-real/sample2_holoworld.mp4" type="video/mp4"></video>
+                <div class="weather-caption"><strong>Holo-World</strong> <span class="weather-ours-badge">Ours</span></div>
+            </div>
+            <div class="weather-cell">
+                <video class="weather-video" muted loop autoplay playsinline preload="metadata"><source src="assets/comparison-real/sample2_versecrafter.mp4" type="video/mp4"></video>
+                <div class="weather-caption">VerseCrafter</div>
+            </div>
+            <div class="weather-cell">
+                <video class="weather-video" muted loop autoplay playsinline preload="metadata"><source src="assets/comparison-real/sample2_gen3c.mp4" type="video/mp4"></video>
+                <div class="weather-caption">Gen3C</div>
+            </div>
+            <div class="weather-cell">
+                <video class="weather-video" muted loop autoplay playsinline preload="metadata"><source src="assets/comparison-real/sample2_uni3c.mp4" type="video/mp4"></video>
+                <div class="weather-caption">Uni3C</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+        <!-- Section: Weather Synthesis Comparison -->
+<h2 class="section-title" id="comparison-weather">⛈️ Weather Transfer Comparison</h2>
+
+<!-- Important Note Box -->
+<div class="content-box weather-comparison-note" style="background: rgba(253, 185, 51, 0.08); border: 2px solid rgba(253, 185, 51, 0.4); margin-bottom: 30px;">
+    <div style="display: flex; align-items: flex-start; gap: 16px;">
+        <i class="fas fa-info-circle" style="color: #fdb933; font-size: 1.8rem; margin-top: 4px; flex-shrink: 0;"></i>
+        <div>
+            <h3 style="color: #fdb933; font-size: 1.3rem; margin: 0 0 12px; font-family: 'Montserrat', sans-serif; font-weight: 600;">
+                Note: Our I2V Advantage over V2V Methods
+            </h3>
+            <p style="font-size: 1.05rem; line-height: 1.8; margin: 0; color: rgba(255, 255, 255, 0.9);">
+                <strong>Holo-World</strong> performs <strong>Image-to-Video (I2V)</strong> generation, synthesizing temporal dynamics and weather effects from only a single input frame plus camera trajectory.
+                In contrast, <strong>other methods</strong> (Wan2.7-Edit, Cosmos-Transfer-2.5) are <strong>Video-to-Video (V2V)</strong> approaches that receive the full origin video as input and perform video editing or transfer, which is a less challenging task as they can leverage the temporal information from the origin video.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Comparison Samples -->
+<div class="weather-showcase">
+    <!-- Sample 1: Snow Scene 1 -->
+    <div class="weather-comparison-sample">
+        <div class="weather-sample-header">Sample 1 <span class="weather-sample-tag"><i class="fas fa-snowflake"></i> Snow Scene</span></div>
+
+        <!-- Shared Inputs -->
+        <div class="weather-comparison-inputs">
+            <div class="weather-comparison-input-cells">
+                <div class="weather-cell">
+                    <video class="weather-video input-video" muted loop autoplay playsinline preload="metadata">
+                        <source src="assets/comparison-weather/sample1_camera.mp4" type="video/mp4">
+                    </video>
+                    <div class="weather-caption">Camera Trajectory</div>
+                </div>
+                <div class="weather-cell">
+                    <video class="weather-video input-video" muted loop autoplay playsinline preload="metadata">
+                        <source src="assets/comparison-weather/sample1_origin.mp4" type="video/mp4">
+                    </video>
+                    <div class="weather-caption"><i class="fas fa-video"></i> Origin Video</div>
+                </div>
+                <div class="weather-cell">
+                    <img src="assets/comparison-weather/sample1_origin_frame.jpg" alt="Origin Frame" class="weather-video input-video" style="object-fit: cover;">
+                    <div class="weather-caption">First Frame</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Methods Comparison -->
+        <div class="weather-comparison-methods">
+            <div class="weather-cell">
+                <video class="weather-video" muted loop autoplay playsinline preload="metadata">
+                    <source src="assets/comparison-weather/sample1_cosmos.mp4" type="video/mp4">
+                </video>
+                <div class="weather-caption">Cosmos-Transfer-2.5 <span style="color: #85c9f0; font-size: 0.75rem;">(V2V)</span></div>
+            </div>
+            <div class="weather-cell">
+                <video class="weather-video" muted loop autoplay playsinline preload="metadata">
+                    <source src="assets/comparison-weather/sample1_wan27.mp4" type="video/mp4">
+                </video>
+                <div class="weather-caption">Wan2.7-Edit <span style="color: #85c9f0; font-size: 0.75rem;">(V2V)</span></div>
+            </div>
+            <div class="weather-cell" style="border: 2px solid rgba(253, 185, 51, 0.5); border-radius: 12px; padding: 4px; background: rgba(253, 185, 51, 0.05);">
+                <video class="weather-video" muted loop autoplay playsinline preload="metadata">
+                    <source src="assets/comparison-weather/sample1_holoworld.mp4" type="video/mp4">
+                </video>
+                <div class="weather-caption"><strong>Holo-World</strong> <span style="color: #fdb933; font-size: 0.75rem; font-weight: 600;">(I2V)</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sample 2: Snow Scene 2 -->
+    <div class="weather-comparison-sample">
+        <div class="weather-sample-header">Sample 2 <span class="weather-sample-tag"><i class="fas fa-snowflake"></i> Fog Scene</span></div>
+
+        <!-- Shared Inputs -->
+        <div class="weather-comparison-inputs">
+            <div class="weather-comparison-input-cells">
+                <div class="weather-cell">
+                    <video class="weather-video input-video" muted loop autoplay playsinline preload="metadata">
+                        <source src="assets/comparison-weather/sample2_camera.mp4" type="video/mp4">
+                    </video>
+                    <div class="weather-caption">Camera Trajectory</div>
+                </div>
+                <div class="weather-cell">
+                    <video class="weather-video input-video" muted loop autoplay playsinline preload="metadata">
+                        <source src="assets/comparison-weather/sample2_origin.mp4" type="video/mp4">
+                    </video>
+                    <div class="weather-caption"><i class="fas fa-video"></i> Origin Video</div>
+                </div>
+                <div class="weather-cell">
+                    <img src="assets/comparison-weather/sample2_origin_frame.jpg" alt="Origin Frame" class="weather-video input-video" style="object-fit: cover;">
+                    <div class="weather-caption">First Frame</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Methods Comparison -->
+        <div class="weather-comparison-methods">
+            <div class="weather-cell">
+                <video class="weather-video" muted loop autoplay playsinline preload="metadata">
+                    <source src="assets/comparison-weather/sample2_cosmos.mp4" type="video/mp4">
+                </video>
+                <div class="weather-caption">Cosmos-Transfer-2.5 <span style="color: #85c9f0; font-size: 0.75rem;">(V2V)</span></div>
+            </div>
+            <div class="weather-cell">
+                <video class="weather-video" muted loop autoplay playsinline preload="metadata">
+                    <source src="assets/comparison-weather/sample2_wan27.mp4" type="video/mp4">
+                </video>
+                <div class="weather-caption">Wan2.7-Edit <span style="color: #85c9f0; font-size: 0.75rem;">(V2V)</span></div>
+            </div>
+            <div class="weather-cell" style="border: 2px solid rgba(253, 185, 51, 0.5); border-radius: 12px; padding: 4px; background: rgba(253, 185, 51, 0.05);">
+                <video class="weather-video" muted loop autoplay playsinline preload="metadata">
+                    <source src="assets/comparison-weather/sample2_holoworld.mp4" type="video/mp4">
+                </video>
+                <div class="weather-caption"><strong>Holo-World</strong> <span style="color: #fdb933; font-size: 0.75rem; font-weight: 600;">(I2V)</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sample 3: Rain Scene -->
+    <div class="weather-comparison-sample">
+        <div class="weather-sample-header">Sample 3 <span class="weather-sample-tag"><i class="fas fa-cloud-rain"></i> Rain Scene</span></div>
+
+        <!-- Shared Inputs -->
+        <div class="weather-comparison-inputs">
+            <div class="weather-comparison-input-cells">
+                <div class="weather-cell">
+                    <video class="weather-video input-video" muted loop autoplay playsinline preload="metadata">
+                        <source src="assets/comparison-weather/sample3_camera.mp4" type="video/mp4">
+                    </video>
+                    <div class="weather-caption">Camera Trajectory</div>
+                </div>
+                <div class="weather-cell">
+                    <video class="weather-video input-video" muted loop autoplay playsinline preload="metadata">
+                        <source src="assets/comparison-weather/sample3_origin.mp4" type="video/mp4">
+                    </video>
+                    <div class="weather-caption"><i class="fas fa-video"></i> Origin Video</div>
+                </div>
+                <div class="weather-cell">
+                    <img src="assets/comparison-weather/sample3_origin_frame.jpg" alt="Origin Frame" class="weather-video input-video" style="object-fit: cover;">
+                    <div class="weather-caption">First Frame</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Methods Comparison -->
+        <div class="weather-comparison-methods">
+            <div class="weather-cell">
+                <video class="weather-video" muted loop autoplay playsinline preload="metadata">
+                    <source src="assets/comparison-weather/sample3_cosmos.mp4" type="video/mp4">
+                </video>
+                <div class="weather-caption">Cosmos-Transfer-2.5 <span style="color: #85c9f0; font-size: 0.75rem;">(V2V)</span></div>
+            </div>
+            <div class="weather-cell">
+                <video class="weather-video" muted loop autoplay playsinline preload="metadata">
+                    <source src="assets/comparison-weather/sample3_wan27.mp4" type="video/mp4">
+                </video>
+                <div class="weather-caption">Wan2.7-Edit <span style="color: #85c9f0; font-size: 0.75rem;">(V2V)</span></div>
+            </div>
+            <div class="weather-cell" style="border: 2px solid rgba(253, 185, 51, 0.5); border-radius: 12px; padding: 4px; background: rgba(253, 185, 51, 0.05);">
+                <video class="weather-video" muted loop autoplay playsinline preload="metadata">
+                    <source src="assets/comparison-weather/sample3_holoworld.mp4" type="video/mp4">
+                </video>
+                <div class="weather-caption"><strong>Holo-World</strong> <span style="color: #fdb933; font-size: 0.75rem; font-weight: 600;">(I2V)</span></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+        <!-- Section: Citation -->
+        <h2 class="section-title" id="citation">📚 Citation</h2>
+        <div class="citation-section">
+            <p style="margin-bottom: 20px; font-size: 1.05rem; color: rgba(255,255,255,0.85);">
+                If you find HoloWorld useful in your research, please cite us:
+            </p>
+            <div style="position: relative;">
+                <pre id="bibtex-content">
+@article{yin2026holoworld,
+    title={Holo-World: Unified Camera, Object and Weather Control for Video World Model}, 
+    author={Xiangchen Yin and Wenzhang Sun and Jiahui Yuan and Zijie Liu and Yinda Chen and Wei Li and Dachun Kai and Chunfeng Wang and Xiaoyan Sun},
+    year={2026},
+    eprint={2606.20083},
+    archivePrefix={arXiv},
+    primaryClass={cs.CV},
+    url={https://arxiv.org/abs/2606.20083}, 
+}
+</pre>
+                <button class="copy-button" onclick="copyBibtex()">
+                    <i class="fas fa-copy"></i> Copy BibTeX
+                </button>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2026 Holo-World</p>
+        </footer>
+    </div>
+
+    <script src="js/main.js"></script>
+
+
+</body>
+</html>
