@@ -1,0 +1,9 @@
+# 大体积图表源文件,网页不依赖,保留在本地
+*.pptx
+
+# 系统/运行时杂项
+server.log
+.DS_Store
+
+# 中文论文稿,不公开
+Holo-World_*.md
